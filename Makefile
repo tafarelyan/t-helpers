@@ -1,12 +1,6 @@
 init:
 	pip install -r requirements.txt
 
-test:
-	nosetests -v
-
-coverage:
-	nosetests -v --with-coverage --cover-package=helpers --cover-xml
-
 publish:
 	pip install 'twine>=1.5.0'
 	python setup.py sdist bdist_wheel

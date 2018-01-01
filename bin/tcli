@@ -4,23 +4,23 @@ import os
 import argparse
 import subprocess
 
-home = os.path.expanduser('~')
+from helpers import HOME
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dotfiles', '-d', action='store_true')
 args = parser.parse_args()
 
 if args.dotfiles:
-    repo_path = os.path.join(home, 'dotfiles')
+    repo_path = os.path.join(HOME, 'dotfiles')
 
-    clone_url = 'https://github.com/ArrowsX/dotfiles.git'
+    clone_url = 'https://github.com/tafarelyan/dotfiles.git'
     subprocess.run(['git', 'clone', clone_url, repo_path])
 
-    ignored_files = ['README.md', '.git', 'mover.py']
     for f in os.listdir(repo_path):
-        if f not in ignored_files:
+        if f not in ['README.md', '.git']:
             input_ = os.path.join(repo_path, f)
-            output_ = os.path.join(home, '.' + f)
+            output_ = os.path.join(HOME, '.' + f)
             subprocess.run(['cp', input_, output_])
+
     subprocess.run(['rm', '-rf', repo_path])
     print('\nConfig files updated')
