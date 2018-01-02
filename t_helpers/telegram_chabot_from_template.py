@@ -15,14 +15,15 @@ def create_chatbot(commands=None):
             'from telegram.ext import Updater, CommandHandler\n\n\n'
             'def start(bot, update):\n'
             '    update.message.reply_text(\'Hello World\')\n\n'
-            f'{functions}\n'
+            '{functions}\n'
             'def main():\n'
             '    updater = Updater("TOKEN")\n'
             '    dp = updater.dispatcher\n\n'
             '    dp.add_handler(CommandHandler(\'start\', start))\n'
-            f'{add_handlers}\n'
+            '{add_handlers}\n'
             '    updater.start_polling()\n'
             '    updater.idle()\n\n\n'
             'if __name__ == \'__main__\':\n'
             '    main()\n'
+            .format(functions=functions, add_handlers=add_handlers)
         )
