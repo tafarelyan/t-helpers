@@ -2,7 +2,7 @@ import os
 
 from .constants import HOME
 from .push_notifications import send_push
-from .telegram_chabot_from_template import create_chatbot
+from .telegram_chabots import create_chatbot
 
 __all__ = ['send_push', 'HOME', 'create_chatbot']
 

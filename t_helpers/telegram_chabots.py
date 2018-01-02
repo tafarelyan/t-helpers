@@ -1,5 +1,4 @@
 def create_chatbot(commands=None):
-
     if commands:
         func_tpl = '\ndef {func}(bot, update):\n    pass\n\n'
         functions = ''.join([func_tpl.format(func=func) for func in commands])
