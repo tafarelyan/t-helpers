@@ -6,7 +6,7 @@ def requirements():
         return [install.strip() for install in requirements]
 
 setup(name='t-helpers',
-      version='0.0.5',
+      version='0.0.6',
       description='Tafarel personal helper tools',
       author='Tafarel Yan',
       author_email='tafarel.yan@gmail.com',
