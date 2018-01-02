@@ -2,9 +2,9 @@ import os
 
 from .constants import HOME
 from .push_notifications import send_push
-from .telegram_chabot_from_template import create_basic_chatbot
+from .telegram_chabot_from_template import create_chatbot
 
-__all__ = ['send_push', 'HOME', 'create_basic_chatbot']
+__all__ = ['send_push', 'HOME', 'create_chatbot']
 
 credentials = os.path.join(HOME, '.tcredentials')
 if not os.path.exists(credentials):
