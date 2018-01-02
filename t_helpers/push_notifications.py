@@ -1,6 +1,6 @@
 import os
-
-import requests
+import json
+import urllib.request
 
 
 def send_push(title, body):
@@ -8,6 +8,7 @@ def send_push(title, body):
 
     headers = {
         'Access-Token': os.environ['PUSH_BULLET_API_TOKEN'],
+        'Content-Type': 'application/json',
     }
 
     payload = {
@@ -15,7 +16,9 @@ def send_push(title, body):
         'title': 'Hello World',
         'body': 'No content',
     }
+    data = json.dumps(payload).encode('utf8')
 
-    r = requests.post(url, headers=headers, json=payload)
+    req = urllib.request.Request(url, headers=headers, data=data)
+    response = urllib.request.urlopen(req)
 
-    return r.json()
+    return json.loads(response.read().decode('utf8'))
