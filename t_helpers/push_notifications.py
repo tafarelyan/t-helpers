@@ -13,8 +13,8 @@ def send_push(title, body):
 
     payload = {
         'type': 'note',
-        'title': 'Hello World',
-        'body': 'No content',
+        'title': title,
+        'body': body,
     }
     data = json.dumps(payload).encode('utf8')
 
