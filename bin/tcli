@@ -4,7 +4,7 @@ import os
 import argparse
 import subprocess
 
-from helpers import HOME
+from t_helpers import HOME
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dotfiles', '-d', action='store_true')
