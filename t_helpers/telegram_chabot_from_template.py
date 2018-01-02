@@ -1,6 +1,6 @@
 import os
 
-TEMPLATES = os.path.join(os.path.dirname(__file__), 'templates')
+TEMPLATES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
 
 
 def create_basic_chatbot(commands=None):
