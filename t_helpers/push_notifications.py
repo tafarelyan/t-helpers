@@ -2,7 +2,6 @@ import os
 import json
 import urllib.request
 
-
 def send_push(title, body):
     url = 'https://api.pushbullet.com/v2/pushes'
 

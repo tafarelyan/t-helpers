@@ -1,12 +1,17 @@
 import os
 
-from .constants import HOME
 from .push_notifications import send_push
 from .telegram_chabots import create_chatbot
 
-__all__ = ['send_push', 'HOME', 'create_chatbot']
+__all__ = ['send_push', 'create_chatbot']
 
-credentials = os.path.join(HOME, '.tcredentials')
+home = os.path.expanduser('~')
+
+config = os.path.join(home, '.tconfig')
+if not os.path.exists(config):
+    os.makedirs(config)
+
+credentials = os.path.join(config, 'credentials')
 if not os.path.exists(credentials):
     print('You don\'t have a credentials file yet')
     print('Creating {}...'.format(credentials))
