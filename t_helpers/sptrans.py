@@ -33,3 +33,13 @@ class SPTrans(object):
             pp = pprint.PrettyPrinter(indent=2)
             pp.pprint(row)
             pp.pprint(r.json())
+
+    def bus_estimate_time(self, line):
+        url = '{0}/Linha/Buscar?termosBusca={1}'.format(self.BASE_URL, line)
+        for row in self.session.get(url).json():
+            url = '{0}/Previsao/Linha?codigoLinha={1}'.format(self.BASE_URL, row['cl'])
+            r = self.session.get(url)
+
+            pp = pprint.PrettyPrinter(indent=2)
+            pp.pprint(row)
+            pp.pprint(r.json())
