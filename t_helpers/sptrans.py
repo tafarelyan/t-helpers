@@ -4,51 +4,32 @@ import pprint
 import requests
 
 
-VERSION = 2.1
-BASE_URL = 'http://api.olhovivo.sptrans.com.br/v{0}'.format(VERSION)
+class SPTrans(object):
 
+    VERSION = 2.1
+    BASE_URL = 'http://api.olhovivo.sptrans.com.br/v{0}'.format(VERSION)
 
-def authenticate():
-    url = BASE_URL + '/Login/Autenticar'
+    def __init__(self):
+        self._authenticate()
 
-    payload = {
-        'token': os.environ['SPTRANS_API_TOKEN'],
-    }
+    def _authenticate(self):
+        self.session = requests.Session()
 
-    r = requests.post(url, params=payload)
+        r = self.session.post('{0}/Login/Autenticar?token={1}'.format(
+            self.BASE_URL, os.environ['SPTRANS_API_TOKEN']
+        ))
 
-    if r.json():
-        print('Authentication success')
-        return r.cookies
-    else:
-        raise ValueError('Wrong API TOKEN')
+        if r.json():
+            print('Authentication success')
+        else:
+            raise ValueError('Wrong API TOKEN')
 
+    def bus_position(self, line):
+        url = '{0}/Linha/Buscar?termosBusca={1}'.format(self.BASE_URL, line)
+        for row in self.session.get(url).json():
+            url = '{0}/Posicao/Linha?codigoLinha={1}'.format(self.BASE_URL, row['cl'])
+            r = self.session.get(url)
 
-def line_search(line):
-    url = BASE_URL + '/Linha/Buscar'
-
-    payload = {
-        'termosBusca': line
-    }
-
-    cookies = authenticate()
-
-    r = requests.get(url, params=payload, cookies=cookies)
-
-    pp = pprint.PrettyPrinter(indent=2)
-    pp.pprint(r.json())
-
-
-def bus_position(line_code):
-    url = BASE_URL + '/Posicao/Linha'
-    
-    payload = {
-        'codigoLinha': line_code,
-    }
-
-    cookies = authenticate()
-
-    r = requests.get(url, params=payload, cookies=cookies)
-
-    pp = pprint.PrettyPrinter(indent=2)
-    pp.pprint(r.json())
+            pp = pprint.PrettyPrinter(indent=2)
+            pp.pprint(row)
+            pp.pprint(r.json())

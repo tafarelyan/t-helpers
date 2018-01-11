@@ -4,7 +4,7 @@ from .misc import (create_credentials, credentials_to_environ,
                    install_chromedriver)
 from .push_bullet import send_push_notifications
 from .telegram import create_chatbot
-from .sptrans import *
+from .sptrans import SPTrans
 
 __all__ = ['send_push', 'create_chatbot']
 
