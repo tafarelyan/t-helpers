@@ -1,4 +1,5 @@
 import smtplib
+from email.mime.text import MIMEText
 
 
 class Mailing(object):
@@ -7,15 +8,16 @@ class Mailing(object):
         self.username = username
         self.password = password
 
-    def send(self, to_, subject, msg):
-        message = (
-            'From: {}\nTo: {}\n'
-            'Subject:{}\n\n{}'
-        ).format(self.username, to_, subject, msg)
-
+    def send(self, to_, subject, body):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()
         server.starttls()
         server.login(self.username, self.password)
-        server.sendmail(self.username, to_, message)
-        server.close()
+
+        msg = MIMEText(body)
+        msg['Subject'] = subject
+        msg['From'] = self.username
+        msg['To'] = to_
+
+        server.sendmail(self.username, to_, msg.as_string())
+        server.quit()
