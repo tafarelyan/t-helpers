@@ -11,7 +11,7 @@ from .sptrans import SPTrans
 __all__ = ['send_push_notification', 'create_chatbot', 'download_from_youtube',
            'Mailing', 'SPTrans']
 
-HOME = os.paath.expanduser('~')
+HOME = os.path.expanduser('~')
 
 CONFIG = os.path.join(HOME, '.tconfig')
 if not os.path.exists(CONFIG):
