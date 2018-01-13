@@ -11,7 +11,9 @@ from .sptrans import SPTrans
 __all__ = ['send_push_notification', 'create_chatbot', 'download_from_youtube',
            'Mailing', 'SPTrans']
 
-CONFIG = os.path.join(os.path.expanduser('~'), '.tconfig')
+HOME = os.paath.expanduser('~')
+
+CONFIG = os.path.join(HOME, '.tconfig')
 if not os.path.exists(CONFIG):
     os.makedirs(CONFIG)
 

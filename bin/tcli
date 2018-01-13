@@ -4,14 +4,14 @@ import os
 import argparse
 import subprocess
 
-from t_helpers import home
+from t_helpers import HOME
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dotfiles', '-d', action='store_true')
 args = parser.parse_args()
 
 if args.dotfiles:
-    repo_path = os.path.join(home, 'dotfiles')
+    repo_path = os.path.join(HOME, 'dotfiles')
 
     clone_url = 'https://github.com/tafarelyan/dotfiles.git'
     subprocess.run(['git', 'clone', clone_url, repo_path])
@@ -19,7 +19,7 @@ if args.dotfiles:
     for f in os.listdir(repo_path):
         if f not in ['README.md', '.git']:
             input_ = os.path.join(repo_path, f)
-            output_ = os.path.join(home, '.' + f)
+            output_ = os.path.join(HOME, '.' + f)
             subprocess.run(['cp', input_, output_])
 
     subprocess.run(['rm', '-rf', repo_path])
