@@ -34,7 +34,7 @@ def credentials_to_environ(credentials_path):
                 pass
 
 
-def install_chromedriver(path=None):
+def install_chromedriver(path):
     base_url = 'https://chromedriver.storage.googleapis.com'
 
     version = requests.get(base_url + '/LATEST_RELEASE').json()
@@ -54,14 +54,14 @@ def install_chromedriver(path=None):
         )
 
         z = zipfile.ZipFile(io.BytesIO(requests.get(file_url).content))
-        z.extractall(path=config_path)
+        z.extractall(path=path)
 
-        st = os.stat(chromedriver_path)
-        os.chmod(chromedriver_path, st.st_mode | 0o111)
+        st = os.stat(os.path.join(path, 'chromedriver'))
+        os.chmod(os.path.join(path, 'chromedriver'), st.st_mode | 0o111)
     else:
         message = (
             'No OS found in your credentials file. '
             'Please write a new line in your credentials: '
-            'OS = your_operational_system' 
+            'OS = your_operational_system'
         )
         warnings.warn(message, stacklevel=2)

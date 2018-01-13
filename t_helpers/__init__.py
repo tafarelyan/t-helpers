@@ -4,11 +4,12 @@ from .misc import (create_credentials, credentials_to_environ,
                    install_chromedriver)
 from .telegram import create_chatbot
 from .youtube import download_from_youtube
-from .push_bullet import send_push_notifications
+from .push_bullet import send_push_notification
 from .mailing import Mailing
 from .sptrans import SPTrans
 
-__all__ = ['send_push_notifications', 'create_chatbot', 'download_from_youtube', 'Mailing', 'SPTrans']
+__all__ = ['send_push_notification', 'create_chatbot', 'download_from_youtube',
+           'Mailing', 'SPTrans']
 
 CONFIG = os.path.join(os.path.expanduser('~'), '.tconfig')
 if not os.path.exists(CONFIG):
@@ -22,4 +23,4 @@ credentials_to_environ(CREDENTIALS_PATH)
 
 CHROMEDRIVER_PATH = os.path.join(CONFIG, 'chromedriver')
 if not os.path.exists(CHROMEDRIVER_PATH):
-    install_chromedriver(path=CONFIG)
+    install_chromedriver(CONFIG)

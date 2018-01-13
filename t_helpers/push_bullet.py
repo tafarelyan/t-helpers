@@ -3,7 +3,7 @@ import os
 import requests
 
 
-def send_push_notifications(title, body):
+def send_push_notification(title, body):
     url = 'https://api.pushbullet.com/v2/pushes'
 
     headers = {
