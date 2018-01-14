@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from .path import CONFIG
-from .misc import install_chromedriver
-from .push_bullet import send_push_notification
+from t_helpers import CONFIG
+from t_helpers.misc import install_chromedriver
+from t_helpers.push_bullet import send_push_notification
 
 
 class Decolar(object):
