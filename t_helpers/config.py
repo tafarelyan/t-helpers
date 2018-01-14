@@ -69,3 +69,16 @@ def install_chromedriver(path):
 
     elif os.path.exists(chromedriver_path):
         return chromedriver_path
+
+
+CONFIG = os.path.join(os.path.expanduser('~'), '.tconfig')
+if not os.path.exists(CONFIG):
+    os.makedirs(CONFIG)
+
+credentials = os.path.join(CONFIG, 'credentials')
+if not os.path.exists(credentials):
+    create_credentials(credentials)
+
+credentials_to_environ(credentials)
+
+CHROMEDRIVER_PATH = install_chromedriver(CONFIG)

@@ -1,13 +1,11 @@
 import json
 import time
 
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from t_helpers import CONFIG
-from t_helpers.misc import install_chromedriver
-from t_helpers.push_bullet import send_push_notification
+from .config import CHROMEDRIVER_PATH
+from .push_bullet import send_push_notification
 
 
 class Decolar(object):
@@ -16,12 +14,14 @@ class Decolar(object):
         self.results = []
 
     def __enter__(self):
-        chromedriver_path = install_chromedriver(CONFIG)
-
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        self.browser = webdriver.Chrome(executable_path=chromedriver_path,
-                                        chrome_options=options)
+
+        self.browser = webdriver.Chrome(
+            executable_path=CHROMEDRIVER_PATH,
+            chrome_options=options
+        )
+
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -37,7 +37,6 @@ class Decolar(object):
         origin = (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
                   .find_element_by_css_selector('div[class*="sbox-origin-container"]')
                   .find_element_by_css_selector('input[class*="origin-input"]'))
-        debug(origin)
         origin.clear()
         origin.send_keys('São Paulo, Brasil')
 
@@ -52,7 +51,6 @@ class Decolar(object):
         destination = (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
                        .find_element_by_css_selector('div[class*="sbox-destination-container"]')
                        .find_element_by_css_selector('input[class*="destination-input"]'))
-        debug(destination)
         destination.clear()
         destination.send_keys('Toronto, Canadá')
 

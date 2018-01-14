@@ -4,7 +4,7 @@ with open('requirements.txt') as f:
     requirements = [install.strip() for install in f]
 
 setup(name='t-helpers',
-      version='0.1.8',
+      version='0.1.9',
       description='Tafarel personal helper tools',
       author='Tafarel Yan',
       author_email='tafarel.yan@gmail.com',
