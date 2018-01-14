@@ -10,12 +10,6 @@ from .misc import install_chromedriver
 from .push_bullet import send_push_notification
 
 
-def debug(elem):
-    html_content = elem.get_attribute('outerHTML')
-    soup = BeautifulSoup(html_content, 'html.parser')
-    print(soup.prettify())
-
-
 class Decolar(object):
 
     def __init__(self):
