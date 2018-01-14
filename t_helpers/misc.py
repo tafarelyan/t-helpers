@@ -1,7 +1,6 @@
 import os
 import io
 import zipfile
-import warnings
 
 import requests
 
@@ -45,8 +44,8 @@ def install_chromedriver(path):
         'linux': 'linux64'
     }
 
-    if os.environ.get('OS'):
-        'OS = macos'
+    chromedriver_path = os.path.join(path, 'chromedriver')
+    if os.environ.get('OS') and not os.path.exists(chromedriver_path):
         output = operation_systems[os.environ.get('OS')]
 
         file_url = '{0}/{1}/chromedriver_{2}.zip'.format(
@@ -56,12 +55,17 @@ def install_chromedriver(path):
         z = zipfile.ZipFile(io.BytesIO(requests.get(file_url).content))
         z.extractall(path=path)
 
-        st = os.stat(os.path.join(path, 'chromedriver'))
-        os.chmod(os.path.join(path, 'chromedriver'), st.st_mode | 0o111)
-    else:
-        message = (
-            'No OS found in your credentials file. '
+        st = os.stat(chromedriver_path)
+        os.chmod(chromedriver_path, st.st_mode | 0o111)
+
+        return chromedriver_path
+
+    elif not os.environ.get('OS'):
+        raise ValueError(
+            'No OS config found in your credentials file. '
             'Please write a new line in your credentials: '
             'OS = your_operational_system'
         )
-        warnings.warn(message, stacklevel=2)
+
+    elif os.path.exists(chromedriver_path):
+        return chromedriver_path

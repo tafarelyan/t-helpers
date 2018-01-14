@@ -9,11 +9,9 @@ from .mailing import Mailing
 from .sptrans import SPTrans
 
 __all__ = ['send_push_notification', 'create_chatbot', 'download_from_youtube',
-           'Mailing', 'SPTrans']
+           'install_chromedriver', 'Mailing', 'SPTrans']
 
-HOME = os.path.expanduser('~')
-
-CONFIG = os.path.join(HOME, '.tconfig')
+CONFIG = os.path.join(os.path.expanduser('~'), '.tconfig')
 if not os.path.exists(CONFIG):
     os.makedirs(CONFIG)
 
@@ -22,7 +20,3 @@ if not os.path.exists(CREDENTIALS_PATH):
     create_credentials(CREDENTIALS_PATH)
 
 credentials_to_environ(CREDENTIALS_PATH)
-
-CHROMEDRIVER_PATH = os.path.join(CONFIG, 'chromedriver')
-if not os.path.exists(CHROMEDRIVER_PATH):
-    install_chromedriver(CONFIG)
