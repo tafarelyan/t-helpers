@@ -15,7 +15,7 @@ class Decolar(object):
 
     def __enter__(self):
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        #  options.add_argument('headless')
 
         self.browser = webdriver.Chrome(
             executable_path=CHROMEDRIVER_PATH,
@@ -27,55 +27,62 @@ class Decolar(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.browser.quit()
 
-    def get_cheap_flights(self):
+    def get_flights(self, from_, to_):
         self.browser.get('https://www.decolar.com/passagens-aereas')
 
-        time.sleep(3)
-        (self.browser.find_element_by_css_selector('span[class*="as-login-close"]')
+        origin = (
+            self.browser
+            .find_element_by_class_name('searchbox-sbox-all-boxes')
+            .find_element_by_css_selector('div[class*="sbox-origin-container"]')
+            .find_element_by_css_selector('input[class*="origin-input"]')
+        )
+        origin.clear()
+        origin.send_keys(from_)
+
+        destination = (
+            self.browser
+            .find_element_by_class_name('searchbox-sbox-all-boxes')
+            .find_element_by_css_selector('div[class*="sbox-destination-container"]')
+            .find_element_by_css_selector('input[class*="destination-input"]')
+        )
+        destination.clear()
+        destination.send_keys(to_)
+
+        (self.browser
+         .find_element_by_class_name('searchbox-sbox-all-boxes')
+         .find_element_by_css_selector('input[class*="sbox-bind-checked-no-specified-date"]')
+         .send_keys(Keys.SPACE))
+
+        # Close elements that will fuck up
+        (self.browser
+         .find_element_by_css_selector('span[class*="as-login-close"]')
          .click())
 
-        origin = (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
-                  .find_element_by_css_selector('div[class*="sbox-origin-container"]')
-                  .find_element_by_css_selector('input[class*="origin-input"]'))
-        origin.clear()
-        origin.send_keys('São Paulo, Brasil')
-
-        time.sleep(2)
-
-        (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
+        (self.browser
+         .find_element_by_class_name('searchbox-sbox-all-boxes')
          .find_element_by_css_selector('div[class*="sbox-origin-container"]')
          .find_element_by_css_selector('ul[class="geo-autocomplete-list"]')
          .find_element_by_css_selector('a[href="#"]')
          .click())
 
-        destination = (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
-                       .find_element_by_css_selector('div[class*="sbox-destination-container"]')
-                       .find_element_by_css_selector('input[class*="destination-input"]'))
-        destination.clear()
-        destination.send_keys('Toronto, Canadá')
-
-        time.sleep(2)
-
-        (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
+        (self.browser
+         .find_element_by_class_name('searchbox-sbox-all-boxes')
          .find_element_by_css_selector('div[class*="sbox-destination-container"]')
          .find_element_by_css_selector('ul[class="geo-autocomplete-list"]')
          .find_element_by_css_selector('a[href="#"]')
          .click())
 
-        (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
-         .find_element_by_css_selector('input[class*="sbox-bind-checked-no-specified-date"]')
-         .send_keys(Keys.SPACE))
-
-        # Close elements that will fuck up
-        (self.browser.find_element_by_class_name('searchbox-sbox-all-boxes')
+        (self.browser
+         .find_element_by_class_name('searchbox-sbox-all-boxes')
          .find_element_by_css_selector('a[class*="sbox-search')
          .click())
 
-        time.sleep(5)
-
+        assert self.browser.current_url != 'https://www.decolar.com/passagens-aereas'
+        time.sleep(2)
         for cluster in self.browser.find_elements_by_css_selector('div[class*="flights-cluster"]'):
             currency = cluster.find_element_by_css_selector('span[class*="price-mask"]').text
-            total_amount = (cluster.find_element_by_css_selector('span[class*="price-amount"]').text
+            total_amount = (cluster
+                            .find_element_by_css_selector('span[class*="price-amount"]').text
                             .replace(',', '').replace('.', ''))
 
             cluster_dict = {
