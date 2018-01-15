@@ -1,5 +1,6 @@
 import json
 import time
+from collections import defaultdict
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -54,6 +55,7 @@ class Decolar(object):
          .send_keys(Keys.SPACE))
 
         # Close elements that will fuck up
+        time.sleep(1)
         (self.browser
          .find_element_by_css_selector('span[class*="as-login-close"]')
          .click())
@@ -81,13 +83,12 @@ class Decolar(object):
         time.sleep(2)
         for cluster in self.browser.find_elements_by_css_selector('div[class*="flights-cluster"]'):
             currency = cluster.find_element_by_css_selector('span[class*="price-mask"]').text
-            total_amount = (cluster
-                            .find_element_by_css_selector('span[class*="price-amount"]').text
-                            .replace(',', '').replace('.', ''))
+            total_amount = (cluster.find_element_by_css_selector('span[class*="price-amount"]')
+                            .text.replace(',', '').replace('.', ''))
 
             cluster_dict = {
                 'currency': currency,
-                'total_amount': '{:4.2f}'.format(float(total_amount)),
+                'total_amount': '{:4.2f}'.format(float(total_amount))
             }
 
             for subcluster in cluster.find_elements_by_class_name('sub-cluster'):
@@ -111,13 +112,15 @@ class Decolar(object):
                 arrive = subcluster.find_element_by_css_selector('itinerary-element[class="arrive"]')
                 arrive_time = arrive.find_element_by_class_name('hour').text
 
-                days_difference = arrive.find_element_by_class_name('days-difference').text
-                days_difference = [int(s) for s in days_difference if s.isdigit()][0]
+                try:
+                    days_difference = arrive.find_element_by_class_name('days-difference').text
+                    days_difference = [int(s) for s in days_difference if s.isdigit()][0]
+                except:
+                    days_difference = 0
 
                 total_time = subcluster.find_element_by_css_selector('itinerary-element[class="time"]').text
 
                 cluster_dict[route_type.lower()] = {
-                    'date': '{} {:02d} {} {}'.format(weekday, int(day), month, year),
                     'weekday': weekday,
                     'day': '{:02d}'.format(int(day)),
                     'month': month,
@@ -131,17 +134,19 @@ class Decolar(object):
                     'arrival': {
                         'airport': arrival_airport,
                         'city': arrival_city,
-                        'time': arrive_time,
-                        'days_difference': days_difference,
+                        'time': arrive_time
                     },
+                    'days_difference': days_difference,
                     'total_time': total_time
                 }
 
-            print(json.dumps(cluster_dict, indent=1))
+            print(json.dumps(cluster_dict, indent=4))
             self.results.append(cluster_dict)
 
     def send_push(self):
-        output = []
+        from_city = self.results[0]['ida']['departure']['city']
+        to_city = self.results[0]['ida']['arrival']['city']
+        output = [from_city + ' ' + to_city]
 
         for row in self.results:
             price = row['total_amount']
