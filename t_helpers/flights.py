@@ -1,9 +1,9 @@
 import json
 import time
-from collections import defaultdict
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 
 from .config import CHROMEDRIVER_PATH
 from .push_bullet import send_push_notification
@@ -16,7 +16,7 @@ class Decolar(object):
 
     def __enter__(self):
         options = webdriver.ChromeOptions()
-        #  options.add_argument('headless')
+        options.add_argument('headless')
 
         self.browser = webdriver.Chrome(
             executable_path=CHROMEDRIVER_PATH,
@@ -115,7 +115,7 @@ class Decolar(object):
                 try:
                     days_difference = arrive.find_element_by_class_name('days-difference').text
                     days_difference = [int(s) for s in days_difference if s.isdigit()][0]
-                except:
+                except NoSuchElementException:
                     days_difference = 0
 
                 total_time = subcluster.find_element_by_css_selector('itinerary-element[class="time"]').text
