@@ -55,7 +55,7 @@ class Decolar(object):
          .send_keys(Keys.SPACE))
 
         # Close elements that will fuck up
-        time.sleep(1)
+        time.sleep(2)
         (self.browser
          .find_element_by_css_selector('span[class*="as-login-close"]')
          .click())
