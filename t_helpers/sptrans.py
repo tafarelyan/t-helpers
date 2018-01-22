@@ -24,22 +24,32 @@ class SPTrans(object):
         else:
             raise ValueError('Wrong API TOKEN')
 
-    def bus_position(self, line):
+    def bus_position(self, line, sentido=1):
         url = '{0}/Linha/Buscar?termosBusca={1}'.format(self.BASE_URL, line)
         for row in self.session.get(url).json():
-            url = '{0}/Posicao/Linha?codigoLinha={1}'.format(self.BASE_URL, row['cl'])
-            r = self.session.get(url)
+            if row['sl'] == sentido:
+                url = '{0}/Posicao/Linha?codigoLinha={1}'.format(self.BASE_URL, row['cl'])
+                r = self.session.get(url)
 
-            pp = pprint.PrettyPrinter(indent=2)
-            pp.pprint(row)
-            pp.pprint(r.json())
+                pp = pprint.PrettyPrinter(indent=2)
+                pp.pprint(row)
+                pp.pprint(r.json())
 
-    def bus_estimate_time(self, line):
+                return r.json()
+
+    def bus_estimate_time(self, line, parada_id=None, sentido=1):
         url = '{0}/Linha/Buscar?termosBusca={1}'.format(self.BASE_URL, line)
         for row in self.session.get(url).json():
-            url = '{0}/Previsao/Linha?codigoLinha={1}'.format(self.BASE_URL, row['cl'])
-            r = self.session.get(url)
+            if row['sl'] == sentido:
+                payload = {
+                    'codigoLinha': row['cl'],
+                }
 
-            pp = pprint.PrettyPrinter(indent=2)
-            pp.pprint(row)
-            pp.pprint(r.json())
+                if parada_id:
+                    payload['codigoParada'] = parada_id
+
+                r = self.session.get(self.BASE_URL + '/Previsao', params=payload)
+                print(r.url)
+
+                pp = pprint.PrettyPrinter(indent=2)
+                pp.pprint(r.json())
