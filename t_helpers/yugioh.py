@@ -16,7 +16,7 @@ def search_troll_and_toad(query):
         else:
             avg_price = float(string[first_index:])
 
-        return 'R${:.2f}'.format(avg_price * 3.2)
+        return 'R$ {:.2f}'.format(avg_price * 3.2).replace('.', ',')
 
     url = 'https://www.trollandtoad.com/products/search.php'
 
@@ -47,3 +47,52 @@ def search_troll_and_toad(query):
             })
 
     return price_list
+
+
+def search_duel_shop(query):
+    url = 'https://www.duelshop.com.br/procurar'
+    
+    payload = {
+        'controller': 'search',
+        'orderby': 'price',
+        'orderway': 'asc',
+        'search_query': query,
+    }
+
+    r = requests.get(url, params=payload)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    
+    if soup.find('p', {'class': 'alert'}):
+        return 'No results in Duel Shop'
+
+    results = (
+        row for row in soup.find_all('div', {'class': 'product-container'})
+        if not row.find('div', {'class': 'product-disable-box'})
+    )
+
+    price_list = []
+
+    for row in results:
+        price_list.append({
+            'card_name': row.find('a', {'class': 'product-name'}).text.strip(),
+            'avg_price': row.find('span', {'class': 'product-price'}).text.strip()
+        })
+
+    return price_list
+
+
+def search_epic_game(query):
+    url = 'https://www.epicgame.com.br/'
+
+    payload = {
+        'view': 'ecom/itens',
+        'busca': query,
+        'fOrder': 3,
+        'fShow': 160,
+        'txt_estoque':  1,
+    }
+
+    r = requests.get(url, params=payload)
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    return r.url
