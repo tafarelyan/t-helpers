@@ -49,9 +49,13 @@ def search_troll_and_toad(query):
     return price_list
 
 
+def fuzzy_card_to_exact_match(card_name):
+    pass
+
+
 def search_duel_shop(query):
     url = 'https://www.duelshop.com.br/procurar'
-    
+
     payload = {
         'controller': 'search',
         'orderby': 'price',
@@ -61,7 +65,7 @@ def search_duel_shop(query):
 
     r = requests.get(url, params=payload)
     soup = BeautifulSoup(r.content, 'html.parser')
-    
+
     if soup.find('p', {'class': 'alert'}):
         return 'No results in Duel Shop'
 
@@ -73,9 +77,12 @@ def search_duel_shop(query):
     price_list = []
 
     for row in results:
+        card_name = row.find('a', {'class': 'product-name'}).text
+        avg_price = row.find('span', {'class': 'product-price'}).text
+
         price_list.append({
-            'card_name': row.find('a', {'class': 'product-name'}).text.strip(),
-            'avg_price': row.find('span', {'class': 'product-price'}).text.strip()
+            'card_name': card_name.strip(),
+            'avg_price': avg_price.strip()
         })
 
     return price_list
@@ -93,6 +100,4 @@ def search_epic_game(query):
     }
 
     r = requests.get(url, params=payload)
-    soup = BeautifulSoup(r.content, 'html.parser')
-
     return r.url
