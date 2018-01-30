@@ -42,7 +42,7 @@ def search_troll_and_toad(query):
             avg_price = find_calculate_convert_currency(row[2])
             price_list.append({
                 'card_name': row[0],
-                'collection': row[1],
+                #  'collection': row[1],
                 'avg_price': avg_price,
             })
 
