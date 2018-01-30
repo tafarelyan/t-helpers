@@ -30,7 +30,7 @@ def search_troll_and_toad(query):
     soup = BeautifulSoup(r.content, 'html.parser')
 
     results = (
-        [x.text.replace('\xa0', '') for x in row.contents][:-1]
+        [x.text.replace('\xa0', '') for x in row.contents]
         for row in (soup.find('div', {'class': 'searchResults'})
                     .find_all('div', {'class': 'search_result_text'}))
     )
@@ -100,4 +100,29 @@ def search_epic_game(query):
     }
 
     r = requests.get(url, params=payload)
-    return r.url
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    card_name = (
+        soup.find('div', {'class': 'itemMain'})
+        .find_all('td')[2].text.strip()
+    )
+
+    results = (
+        [x.text.strip() for x in row.find_all('td', {'class': 'hmin30'})]
+        for row in (soup.find('div', {'class': 'itemMain'})
+                    .find_all('table')[-1]
+                    .find_all('tr')[1:])
+    )
+
+    price_list = []
+
+    for row in results:
+        if row[3] == '-':
+            row[3] = '...'
+
+        price_list.append({
+            'card_name': ' - '.join([card_name, row[0], row[3]]),
+            'avg_price': row[5],
+        })
+
+    return price_list
