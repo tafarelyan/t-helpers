@@ -1,6 +1,34 @@
+from urllib.parse import urlparse, parse_qs
+
 import requests
 from bs4 import BeautifulSoup
+from requests.exceptions import MissingSchema
 
+
+def fuzzy_query_to_exact_match(card_name):
+    url = 'https://www.google.com.br/search'
+
+    payload = {
+        'q': 'yugioh ' + card_name,
+    }
+
+    r = requests.get(url, params=payload)
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    for tag in soup.find_all('h3', {'class': 'r'}):
+        url_wikia = parse_qs(
+            urlparse(
+                tag.find('a')['href']
+            ).query
+        )['q'][0]
+
+        try:
+            r = requests.get(url_wikia)
+            soup = BeautifulSoup(r.content, 'html.parser')
+            return soup.find('h1').text
+
+        except MissingSchema:
+            pass
 
 def search_troll_and_toad(query):
 
@@ -21,7 +49,7 @@ def search_troll_and_toad(query):
     url = 'https://www.trollandtoad.com/products/search.php'
 
     payload = {
-        'search_words': query,
+        'search_words': fuzzy_query_to_exact_match(query),
         'search_category': 4736,  # Yugioh
         'search_order': 'relevant_desc',
     }
@@ -49,10 +77,6 @@ def search_troll_and_toad(query):
     return price_list
 
 
-def fuzzy_card_to_exact_match(card_name):
-    pass
-
-
 def search_duel_shop(query):
     url = 'https://www.duelshop.com.br/procurar'
 
@@ -60,7 +84,7 @@ def search_duel_shop(query):
         'controller': 'search',
         'orderby': 'price',
         'orderway': 'asc',
-        'search_query': query,
+        'search_query': fuzzy_query_to_exact_match(query),
     }
 
     r = requests.get(url, params=payload)
@@ -93,7 +117,7 @@ def search_epic_game(query):
 
     payload = {
         'view': 'ecom/itens',
-        'busca': query,
+        'busca': fuzzy_query_to_exact_match(query),
         'fOrder': 3,
         'fShow': 160,
         'txt_estoque':  1,
