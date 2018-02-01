@@ -30,6 +30,7 @@ def fuzzy_query_to_exact_match(card_name):
         except MissingSchema:
             pass
 
+
 def search_troll_and_toad(query):
 
     def find_calculate_convert_currency(string):
@@ -78,20 +79,22 @@ def search_troll_and_toad(query):
 
 
 def search_duel_shop(query):
+    card_query = fuzzy_query_to_exact_match(query)
+
     url = 'https://www.duelshop.com.br/procurar'
 
     payload = {
         'controller': 'search',
         'orderby': 'price',
         'orderway': 'asc',
-        'search_query': fuzzy_query_to_exact_match(query),
+        'search_query': card_query,
     }
 
     r = requests.get(url, params=payload)
     soup = BeautifulSoup(r.content, 'html.parser')
 
     if soup.find('p', {'class': 'alert'}):
-        return 'No results in Duel Shop'
+        return 'No results for %s in Duel Shop' % card_query
 
     results = (
         row for row in soup.find_all('div', {'class': 'product-container'})
@@ -109,15 +112,20 @@ def search_duel_shop(query):
             'avg_price': avg_price.strip()
         })
 
-    return price_list
+    if price_list:
+        return price_list
+    else:
+        return card_query + ' out of stock in Duel Shop'
 
 
 def search_epic_game(query):
+    card_query = fuzzy_query_to_exact_match(query)
+
     url = 'https://www.epicgame.com.br/'
 
     payload = {
         'view': 'ecom/itens',
-        'busca': fuzzy_query_to_exact_match(query),
+        'busca': card_query,
         'fOrder': 3,
         'fShow': 160,
         'txt_estoque':  1,
@@ -125,6 +133,9 @@ def search_epic_game(query):
 
     r = requests.get(url, params=payload)
     soup = BeautifulSoup(r.content, 'html.parser')
+
+    if soup.find('div', {'class': 'alertaErro'}):
+        return 'No results for %s in Epic Game' % card_query
 
     card_name = (
         soup.find('div', {'class': 'itemMain'})
@@ -149,4 +160,7 @@ def search_epic_game(query):
             'avg_price': row[5],
         })
 
-    return price_list
+    if price_list:
+        return price_list
+    else:
+        return card_query + ' out of stock in Epic'
